@@ -8,6 +8,12 @@ import * as S from "./style";
 
 const UserList = ({ users, isLoading }) => {
   const [hoveredUserId, setHoveredUserId] = useState();
+  const [countries, setCountries] = useState([]);
+
+  const filterdUsers = users.filter((user) => {
+    if (countries.length === 0) return users
+    else return countries.includes(user.location.country)
+  });
 
   const handleMouseEnter = (index) => {
     setHoveredUserId(index);
@@ -17,16 +23,26 @@ const UserList = ({ users, isLoading }) => {
     setHoveredUserId();
   };
 
+
+  const filterByCountry = (event) => {
+    if (countries.includes(event)) {
+      countries.splice(countries.indexOf(event), 1);
+      setCountries([...countries]);
+    }
+    else setCountries(countries => [...countries, event])
+  }
+
   return (
     <S.UserList>
       <S.Filters>
-        <CheckBox value="BR" label="Brazil" />
-        <CheckBox value="AU" label="Australia" />
-        <CheckBox value="CA" label="Canada" />
-        <CheckBox value="DE" label="Germany" />
+        <CheckBox value="Brazil" label="Brazil" onChange={filterByCountry} />
+        <CheckBox value="Australia" label="Australia" onChange={filterByCountry} />
+        <CheckBox value="Canada" label="Canada" onChange={filterByCountry} />
+        <CheckBox value="Germany" label="Germany" onChange={filterByCountry} />
+        <CheckBox value="Spain" label="Spain" onChange={filterByCountry} />
       </S.Filters>
       <S.List>
-        {users.map((user, index) => {
+        {filterdUsers.map((user, index) => {
           return (
             <S.User
               key={index}
