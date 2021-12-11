@@ -1,19 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import NavBarContext from "Context";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
-const NavBar = () => {
-  const [value, setValue] = useState(0);
+const NavBar = ({ }) => {
+  const context = useContext(NavBarContext);
 
   const handleChange = (_e, newValue) => {
-    setValue(newValue);
+    context.onNavBar(newValue);
   };
 
   return (
     <AppBar position="static" color="transparent" style={{ position: "fixed", top: 0 }}>
       <Tabs
-        value={value}
+        value={context.navBar}
         onChange={handleChange}
         aria-label="Navigation"
         indicatorColor="primary"

@@ -7,7 +7,7 @@ const Button = ({
   color = C.COLORS.default,
   disabled,
   size = C.SIZE.medium,
-  variant = C.VARIANT.standard,
+  // variant = C.VARIANT.standard,
   onClick,
 }) => {
   return (

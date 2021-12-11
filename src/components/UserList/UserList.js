@@ -1,28 +1,45 @@
-import React, { useEffect, useState } from "react";
-import Text from "components/Text";
+import React, { useEffect, useState, useContext } from "react";
 import Spinner from "components/Spinner";
 import CheckBox from "components/CheckBox";
-import IconButton from "@material-ui/core/IconButton";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 import * as S from "./style";
+import ListCmp from "components/List/ListCmp";
+import Favorites from "components/Favorites";
+import NavBarContext from "Context";
 
-const UserList = ({ users, isLoading }) => {
-  const [hoveredUserId, setHoveredUserId] = useState();
+const UserList = ({ users, isLoading ,navBar}) => {
+
+  const context = useContext(NavBarContext);
+
   const [countries, setCountries] = useState([]);
+
+  const [favorites, setFavorites] = useState(false);
+
+  const [favoriteUsers, setFavoriteUsers] = useState(() => {
+    const localStorageUsers = localStorage.getItem("favoriteUsers");
+    if (localStorageUsers) {
+      return JSON.parse(localStorageUsers);
+    }
+    return [];
+  })
+
+  useEffect(() => {
+    localStorage.setItem('favoriteUsers', JSON.stringify(favoriteUsers))
+  }, [favoriteUsers])
+
+  const addToFavorite = (user) => {
+    if (favoriteUsers.includes(user)) {
+      favoriteUsers.splice(favoriteUsers.indexOf(user), 1);
+      setFavoriteUsers([...favoriteUsers]);
+    }
+    else {
+      setFavoriteUsers(favoriteUsers => [...favoriteUsers, user])
+    }
+  }
 
   const filterdUsers = users.filter((user) => {
     if (countries.length === 0) return users
     else return countries.includes(user.location.country)
   });
-
-  const handleMouseEnter = (index) => {
-    setHoveredUserId(index);
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredUserId();
-  };
-
 
   const filterByCountry = (event) => {
     if (countries.includes(event)) {
@@ -31,6 +48,8 @@ const UserList = ({ users, isLoading }) => {
     }
     else setCountries(countries => [...countries, event])
   }
+
+
 
   return (
     <S.UserList>
@@ -41,41 +60,36 @@ const UserList = ({ users, isLoading }) => {
         <CheckBox value="Germany" label="Germany" onChange={filterByCountry} />
         <CheckBox value="Spain" label="Spain" onChange={filterByCountry} />
       </S.Filters>
-      <S.List>
-        {filterdUsers.map((user, index) => {
-          return (
-            <S.User
-              key={index}
-              onMouseEnter={() => handleMouseEnter(index)}
-              onMouseLeave={handleMouseLeave}
-            >
-              <S.UserPicture src={user?.picture.large} alt="" />
-              <S.UserInfo>
-                <Text size="22px" bold>
-                  {user?.name.title} {user?.name.first} {user?.name.last}
-                </Text>
-                <Text size="14px">{user?.email}</Text>
-                <Text size="14px">
-                  {user?.location.street.number} {user?.location.street.name}
-                </Text>
-                <Text size="14px">
-                  {user?.location.city} {user?.location.country}
-                </Text>
-              </S.UserInfo>
-              <S.IconButtonWrapper isVisible={index === hoveredUserId}>
-                <IconButton>
-                  <FavoriteIcon color="error" />
-                </IconButton>
-              </S.IconButtonWrapper>
-            </S.User>
-          );
-        })}
-        {isLoading && (
-          <S.SpinnerWrapper>
-            <Spinner color="primary" size="45px" thickness={6} variant="indeterminate" />
-          </S.SpinnerWrapper>
-        )}
-      </S.List>
+
+    {context.navBar === 0 &&
+        <S.List>
+          {filterdUsers.map((user, index) => {
+            return (
+              <ListCmp key={index} index={index} user={user} addToFavorite={addToFavorite} favoriteUsers={favoriteUsers} />
+            );
+          })}
+          {isLoading && (
+            <S.SpinnerWrapper>
+              <Spinner color="primary" size="45px" thickness={6} variant="indeterminate" />
+            </S.SpinnerWrapper>
+          )}
+        </S.List>
+        }
+        {context.navBar === 1 &&
+        
+        <S.List>
+          {favoriteUsers.map((user, index) => {
+            return (
+              <ListCmp key={index} index={index} user={user} addToFavorite={addToFavorite} favoriteUsers={favoriteUsers} />
+            );
+          })}
+          {isLoading && (
+            <S.SpinnerWrapper>
+              <Spinner color="primary" size="45px" thickness={6} variant="indeterminate" />
+            </S.SpinnerWrapper>
+          )}
+        </S.List>
+      }
     </S.UserList>
   );
 };
