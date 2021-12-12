@@ -7,17 +7,17 @@ import NavBarContext from 'Context';
 
 const AppRouter = () => {
 
-  const [navBar, setNavBar] = useState(1);
+  const [navBarIndex, setNavBarIndex] = useState(0);
 
-  const navBarHandler = (navBar) => {
-    setNavBar(navBar);
+  const navBarHandler = (navBarIndex) => {
+    setNavBarIndex(navBarIndex);
   }
 
   return (
     <ThemeProvider>
       <NavBarContext.Provider value=
-      {{navBar: navBar,
-       onNavBar : navBarHandler
+      {{navBarIndex: navBarIndex,
+       onNavBarChange : setNavBarIndex
        }}>
       <Router>
         <NavBar />

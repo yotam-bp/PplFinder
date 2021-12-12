@@ -4,17 +4,17 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
-const NavBar = ({ }) => {
+const NavBar = () => {
   const context = useContext(NavBarContext);
 
   const handleChange = (_e, newValue) => {
-    context.onNavBar(newValue);
+    context.onNavBarChange(newValue);
   };
 
   return (
     <AppBar position="static" color="transparent" style={{ position: "fixed", top: 0 }}>
       <Tabs
-        value={context.navBar}
+        value={context.navBarIndex}
         onChange={handleChange}
         aria-label="Navigation"
         indicatorColor="primary"

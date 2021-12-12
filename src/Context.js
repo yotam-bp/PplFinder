@@ -1,7 +1,7 @@
 import React from 'react';
 
 const NavBarContext = React.createContext({
-    navBar : 1
+    navBarIndex : 0
 });
 
 export default NavBarContext;

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Text from "components/Text";
-import Spinner from "components/Spinner";
 import IconButton from "@material-ui/core/IconButton";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import * as S from "./style";
@@ -21,7 +20,6 @@ const isFavorite = (user) => {
     };
 
     const HandleFavorites = (user) => {
-        console.log('HandleFavorites');
         addToFavorite(user);
     }
 

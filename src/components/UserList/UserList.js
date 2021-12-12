@@ -1,18 +1,15 @@
 import React, { useEffect, useState, useContext } from "react";
+import NavBarContext from "Context";
 import Spinner from "components/Spinner";
 import CheckBox from "components/CheckBox";
+import ListCmp from "components/ListCmp/ListCmp";
 import * as S from "./style";
-import ListCmp from "components/List/ListCmp";
-import Favorites from "components/Favorites";
-import NavBarContext from "Context";
+import Text from "components/Text";
 
-const UserList = ({ users, isLoading ,navBar}) => {
-
+const UserList = ({ users, isLoading }) => {
   const context = useContext(NavBarContext);
 
   const [countries, setCountries] = useState([]);
-
-  const [favorites, setFavorites] = useState(false);
 
   const [favoriteUsers, setFavoriteUsers] = useState(() => {
     const localStorageUsers = localStorage.getItem("favoriteUsers");
@@ -49,19 +46,18 @@ const UserList = ({ users, isLoading ,navBar}) => {
     else setCountries(countries => [...countries, event])
   }
 
-
-
   return (
     <S.UserList>
-      <S.Filters>
-        <CheckBox value="Brazil" label="Brazil" onChange={filterByCountry} />
-        <CheckBox value="Australia" label="Australia" onChange={filterByCountry} />
-        <CheckBox value="Canada" label="Canada" onChange={filterByCountry} />
-        <CheckBox value="Germany" label="Germany" onChange={filterByCountry} />
-        <CheckBox value="Spain" label="Spain" onChange={filterByCountry} />
-      </S.Filters>
-
-    {context.navBar === 0 &&
+      {context.navBarIndex === 0 &&
+        <S.Filters>
+          <CheckBox value="Brazil" label="Brazil" onChange={filterByCountry} />
+          <CheckBox value="Australia" label="Australia" onChange={filterByCountry} />
+          <CheckBox value="Canada" label="Canada" onChange={filterByCountry} />
+          <CheckBox value="Germany" label="Germany" onChange={filterByCountry} />
+          <CheckBox value="Spain" label="Spain" onChange={filterByCountry} />
+        </S.Filters>
+      }
+      {context.navBarIndex === 0 &&
         <S.List>
           {filterdUsers.map((user, index) => {
             return (
@@ -74,15 +70,15 @@ const UserList = ({ users, isLoading ,navBar}) => {
             </S.SpinnerWrapper>
           )}
         </S.List>
-        }
-        {context.navBar === 1 &&
-        
+      }
+      {context.navBarIndex === 1 &&
         <S.List>
           {favoriteUsers.map((user, index) => {
             return (
               <ListCmp key={index} index={index} user={user} addToFavorite={addToFavorite} favoriteUsers={favoriteUsers} />
             );
           })}
+          {!favoriteUsers.length && <Text size="30px" bold>No favorites yet</Text>}
           {isLoading && (
             <S.SpinnerWrapper>
               <Spinner color="primary" size="45px" thickness={6} variant="indeterminate" />
